@@ -13,6 +13,9 @@ public class Main {
         main.initGame();
         main.printField();
         main.locateShips();
+        System.out.println("The game starts!\n");
+        main.printField();
+        main.takeAHit();
     }
 
     private void initGame() {
@@ -50,29 +53,27 @@ public class Main {
     private void locateShips() {
         System.out.println("Enter the coordinates of the Aircraft Carrier (5 cells):\n");
         while (true) {
-            String coordinates = Console.read();
+            String coordinates = checkData(Console.read());
             AircraftCarrier ac = new AircraftCarrier();
             if (checkCoordinate(coordinates, ac)) {
                 addShip(coordinates, ac);
                 printField();
                 break;
             }
-            System.out.println();
         }
         System.out.println("Enter the coordinates of the Battleship (4 cells):\n");
         while (true) {
-            String coordinates = Console.read();
+            String coordinates = checkData(Console.read());
             Battleship bs = new Battleship();
             if (checkCoordinate(coordinates, bs)) {
                 addShip(coordinates, bs);
                 printField();
                 break;
             }
-            System.out.println();
         }
         System.out.println("Enter the coordinates of the Submarine (3 cells):\n");
         while (true) {
-            String coordinates = Console.read();
+            String coordinates = checkData(Console.read());
             Submarine submarine = new Submarine();
             if (checkCoordinate(coordinates, submarine)) {
                 addShip(coordinates, submarine);
@@ -82,7 +83,7 @@ public class Main {
         }
         System.out.println("Enter the coordinates of the Cruiser (3 cells):\n");
         while (true) {
-            String coordinates = Console.read();
+            String coordinates = checkData(Console.read());
             Cruiser cruiser = new Cruiser();
             if (checkCoordinate(coordinates, cruiser)) {
                 addShip(coordinates, cruiser);
@@ -92,7 +93,7 @@ public class Main {
         }
         System.out.println("Enter the coordinates of the Destroyer (3 cells):\n");
         while (true) {
-            String coordinates = Console.read();
+            String coordinates = checkData(Console.read());
             Destroyer destroyer = new Destroyer();
             if (checkCoordinate(coordinates, destroyer)) {
                 addShip(coordinates, destroyer);
@@ -158,5 +159,69 @@ public class Main {
                 field[i][j] = "O";
             }
         }
+    }
+
+    private void takeAHit() {
+
+        System.out.println("Take a shot!\n");
+        while (true) {
+            String[] line = Console.read().split("", 2);
+            System.out.println();
+
+            int letter = line[0].charAt(0) - 64;
+            int digit = Integer.parseInt(line[1]);
+            if (line[0].charAt(0) > 'J') {
+                System.out.println("Error! You entered the wrong coordinates! Try again:\n");
+                continue;
+            }
+            if (digit > 10) {
+                System.out.println("Error! You entered the wrong coordinates! Try again:\n");
+                continue;
+            }
+            if (field[letter][digit].equals("O")) {
+                System.out.println("You hit a ship!\n");
+                field[letter][digit] = "X";
+                printField();
+                break;
+            } else if (field[letter][digit].equals("~")) {
+                System.out.println("You missed!\n");
+                field[letter][digit] = "M";
+                printField();
+                break;
+            }
+
+
+        }
+
+
+    }
+
+    private String checkData(String console) {
+        String[] line = console.split(" ");
+        String[] firstCoordinate = line[0].split("", 2);
+        String[] secondCoordinate = line[1].split("", 2);
+
+        int hf = firstCoordinate[0].charAt(0) - 64;
+        int hs = secondCoordinate[0].charAt(0) - 64;
+
+        int firstElement = Integer.parseInt(firstCoordinate[1]);
+        int secondElement = Integer.parseInt(secondCoordinate[1]);
+        System.out.println();
+        if (hs == hf) {
+            if (secondElement >= firstElement) {
+                return line[0] + " " + line[1];
+            } else {
+                return line[1] + " " + line[0];
+            }
+        }
+        if (firstElement == secondElement) {
+            if (hs >= hf) {
+                return line[0] + " " + line[1];
+            } else {
+                return line[1] + " " + line[0];
+            }
+        }
+
+        return line[0] + " " + line[1];
     }
 }
