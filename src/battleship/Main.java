@@ -6,19 +6,21 @@ import java.util.Arrays;
 
 public class Main {
 
-    private final String[][] field = new String[11][11];
+    private static final String[][] field = new String[11][11];
+    private static final String[][] fok = new String[11][11];
 
     public static void main(String[] args) {
         Main main = new Main();
-        main.initGame();
-        main.printField();
+        main.initGame(field);
+        main.initGame(fok);
+        main.printField(field);
         main.locateShips();
         System.out.println("The game starts!\n");
-        main.printField();
+        main.printField(fok);
         main.takeAHit();
     }
 
-    private void initGame() {
+    private void initGame(String[][] field) {
         for (int i = 0; i < field.length; i++) {
             for (int j = 0; j < field[i].length; j++) {
                 if (i == 0 && j == 0) {
@@ -39,7 +41,7 @@ public class Main {
         }
     }
 
-    private void printField() {
+    private void printField(String[][] field) {
         for (String[] horis : field) {
             for (String cell : horis ) {
                 System.out.print(cell);
@@ -57,7 +59,7 @@ public class Main {
             AircraftCarrier ac = new AircraftCarrier();
             if (checkCoordinate(coordinates, ac)) {
                 addShip(coordinates, ac);
-                printField();
+                printField(field);
                 break;
             }
         }
@@ -67,7 +69,7 @@ public class Main {
             Battleship bs = new Battleship();
             if (checkCoordinate(coordinates, bs)) {
                 addShip(coordinates, bs);
-                printField();
+                printField(field);
                 break;
             }
         }
@@ -77,7 +79,7 @@ public class Main {
             Submarine submarine = new Submarine();
             if (checkCoordinate(coordinates, submarine)) {
                 addShip(coordinates, submarine);
-                printField();
+                printField(field);
                 break;
             }
         }
@@ -87,7 +89,7 @@ public class Main {
             Cruiser cruiser = new Cruiser();
             if (checkCoordinate(coordinates, cruiser)) {
                 addShip(coordinates, cruiser);
-                printField();
+                printField(field);
                 break;
             }
         }
@@ -97,7 +99,7 @@ public class Main {
             Destroyer destroyer = new Destroyer();
             if (checkCoordinate(coordinates, destroyer)) {
                 addShip(coordinates, destroyer);
-                printField();
+                printField(field);
                 break;
             }
         }
@@ -162,7 +164,6 @@ public class Main {
     }
 
     private void takeAHit() {
-
         System.out.println("Take a shot!\n");
         while (true) {
             String[] line = Console.read().split("", 2);
@@ -179,21 +180,21 @@ public class Main {
                 continue;
             }
             if (field[letter][digit].equals("O")) {
-                System.out.println("You hit a ship!\n");
                 field[letter][digit] = "X";
-                printField();
+                fok[letter][digit] = "X";
+                printField(fok);
+                System.out.println("You hit a ship!\n");
+                printField(field);
                 break;
             } else if (field[letter][digit].equals("~")) {
-                System.out.println("You missed!\n");
                 field[letter][digit] = "M";
-                printField();
+                fok[letter][digit] = "M";
+                printField(fok);
+                System.out.println("You missed!\n");
+                printField(field);
                 break;
             }
-
-
         }
-
-
     }
 
     private String checkData(String console) {
