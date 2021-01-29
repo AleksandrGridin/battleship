@@ -2,12 +2,15 @@ package battleship;
 
 import battleship.ships.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Main {
 
     private static final String[][] field = new String[11][11];
     private static final String[][] fok = new String[11][11];
+    private List<Ship> listShips = new ArrayList<>();
 
     public static void main(String[] args) {
         Main main = new Main();
@@ -17,7 +20,10 @@ public class Main {
         main.locateShips();
         System.out.println("The game starts!\n");
         main.printField(fok);
+
         main.takeAHit();
+
+        System.out.println("You sank the last ship. You won. Congratulations!");
     }
 
     private void initGame(String[][] field) {
@@ -59,6 +65,7 @@ public class Main {
             AircraftCarrier ac = new AircraftCarrier();
             if (checkCoordinate(coordinates, ac)) {
                 addShip(coordinates, ac);
+                listShips.add(ac);
                 printField(field);
                 break;
             }
@@ -69,6 +76,7 @@ public class Main {
             Battleship bs = new Battleship();
             if (checkCoordinate(coordinates, bs)) {
                 addShip(coordinates, bs);
+                listShips.add(bs);
                 printField(field);
                 break;
             }
@@ -79,6 +87,7 @@ public class Main {
             Submarine submarine = new Submarine();
             if (checkCoordinate(coordinates, submarine)) {
                 addShip(coordinates, submarine);
+                listShips.add(submarine);
                 printField(field);
                 break;
             }
@@ -89,6 +98,7 @@ public class Main {
             Cruiser cruiser = new Cruiser();
             if (checkCoordinate(coordinates, cruiser)) {
                 addShip(coordinates, cruiser);
+                listShips.add(cruiser);
                 printField(field);
                 break;
             }
@@ -99,6 +109,7 @@ public class Main {
             Destroyer destroyer = new Destroyer();
             if (checkCoordinate(coordinates, destroyer)) {
                 addShip(coordinates, destroyer);
+                listShips.add(destroyer);
                 printField(field);
                 break;
             }
@@ -128,7 +139,7 @@ public class Main {
             return false;
         }
         if (ship.getCells() != lengthOfShip) {
-            System.out.println("Error! Wrong length of the Submarine! Try again:\n");
+            System.out.println("Error! Wrong length of the " + ship.getName() + "! Try again:\n");
             return false;
         }
 
@@ -156,9 +167,11 @@ public class Main {
         int hf = firstCoordinate[0].charAt(0) - 64;
         int hs = secondCoordinate[0].charAt(0) - 64;
 
+
         for (int i = hf; i <= hs; i++) {
             for (int j = firstElement; j <= secondElement; j++) {
                 field[i][j] = "O";
+                ship.addSell(i, j);
             }
         }
     }
@@ -179,19 +192,25 @@ public class Main {
                 System.out.println("Error! You entered the wrong coordinates! Try again:\n");
                 continue;
             }
-            if (field[letter][digit].equals("O")) {
+            if (field[letter][digit].equals("O") || field[letter][digit].equals("X")) {
                 field[letter][digit] = "X";
                 fok[letter][digit] = "X";
                 printField(fok);
-                System.out.println("You hit a ship!\n");
-                printField(field);
-                break;
-            } else if (field[letter][digit].equals("~")) {
+                for (Ship ship : listShips) {
+                    ship.getAHit(letter, digit);
+               }
+                if (listShips.removeIf(Ship::isDead)) {
+                    if (!listShips.isEmpty()) {
+                        System.out.println("You sank a ship! Specify a new target:\n");
+                    }
+                }
+            } else if (field[letter][digit].equals("~") || field[letter][digit].equals("M")) {
                 field[letter][digit] = "M";
                 fok[letter][digit] = "M";
                 printField(fok);
-                System.out.println("You missed!\n");
-                printField(field);
+                System.out.println("You missed. Try again:\n");
+            }
+            if (listShips.isEmpty()) {
                 break;
             }
         }
