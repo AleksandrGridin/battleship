@@ -24,7 +24,8 @@ public abstract class Ship {
 
         if (listCells.removeIf(cell -> cell.getI() == i && cell.getJ() == j)) {
             if (!listCells.isEmpty()) {
-                System.out.println("You hit a ship! Try again:\n");
+                System.out.println();
+                System.out.println("You hit a ship!\n");
             }
         }
 
@@ -41,5 +42,4 @@ public abstract class Ship {
     public List<Cell> getListCells() {
         return listCells;
     }
-
 }
